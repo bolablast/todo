@@ -1,20 +1,27 @@
-const weather = document.querySelector("#weather span:first-child");
-const city = document.querySelector("#weather span:last-child");
-const API_KEY = "241051bf13976dd3ddf8b8d9f247255e";
-
 function onGeoOk(position) {
-  const lat = position.coords.latitude;
-  const lon = position.coords.longitude;
-  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+  const url = `https://api.openweathermap.org/data/2.5/weather?lat=${position.coords.latitude}&lon=${position.coords.longitude}&appid=b657fcc07752e14226f21a098ecd279c&units=metric`;
   fetch(url)
     .then((response) => response.json())
     .then((data) => {
-      city.innerText = data.name;
-      weather.innerText = `${data.weather[0].main} / ${data.main.temp}`;
+      const weather = `${data.weather[0].main} / ${data.main.temp} ${data.name}`;
+      document.querySelector("#weather span").innerText = weather;
+      localStorage.setItem("weather", weather);
     });
 }
-function onGeoError() {
-  alert("Can't find you. No weather for you.");
+if (localStorage.getItem("weather")) {
+  document.querySelector("#weather span:first-child").innerText =
+    localStorage.getItem("weather");
+} else {
+  navigator.geolocation.getCurrentPosition(onGeoOk, () =>
+    alert("Can't find you. No weather for you.")
+  );
 }
 
-navigator.geolocation.getCurrentPosition(onGeoOk, onGeoError);
+const btn = document.querySelector("#weather button");
+btn.addEventListener("click", () => {
+  navigator.geolocation.getCurrentPosition(onGeoOk, () => {
+    document.querySelector("#weather span").innerText = "";
+    localStorage.removeItem("weather");
+    alert("Can't find you. No weather for you.");
+  });
+});
