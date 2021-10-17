@@ -1,3 +1,5 @@
-# Javascript For Beginners
+# 추가한 기능
 
-Learning Javascript by Making a Productivity App
+[] 데드라인
+[] d-day
+[] edit 기능
